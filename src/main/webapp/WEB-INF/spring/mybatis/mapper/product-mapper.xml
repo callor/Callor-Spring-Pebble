@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.callor.product.persistence.ProductDao">
+
+  <resultMap type="productDTO" id="proAndFiles">
+  	<id column="p_code" property="p_code"/>
+  	<result column="p_name" property="p_name" />
+	<result column="p_iprice" property="p_iprice" />
+	<result column="p_oprice" property="p_oprice" />
+	<result column="p_vat" property="p_vat" />
+	<result column="p_file" property="p_file" />
+  	
+  	<collection property="p_files"
+  				column="p_code"
+  				ofType="proFileDTO"
+  				select="findByPCodeFiles" />
+  </resultMap>	
+
+  <select id="selectAll" resultMap="proAndFiles">
+    select * from tbl_product ORDER BY p_code DESC
+  </select>
+  
+  <select id="findByPCode" resultMap="proAndFiles">
+    select * from tbl_product WHERE p_code = #{p_code}
+  </select>
+  
+  <select id="findByPCodeFiles" resultType="proFileDTO">
+  	SELECT * FROM tbl_files WHERE file_p_code = #{p_code}
+  </select>
+  
+  <select id="findByPNames" resultType="productDTO">
+    select * from tbl_product 
+    <where>
+    	<foreach collection="list" item= "s_name" separator="OR" open="AND (" close=")">
+    		p_name LIKE  '%' ||  #{s_name} || '%'
+    	</foreach>
+    </where>
+  </select>
+
+ <!-- 
+ 	resultType이 기본형(int, float, String)일 경우는
+ 	별도로 명시하지 않아도 문제가 없었는데
+ 	현재 3.5에서 문제가 발생하므로 resultType을 명시 해주자
+  -->  
+  <select id="getMaxPCode" resultType="String">
+  	SELECT MAX(p_code) FROM tbl_product 
+  </select>
+  
+  <!-- 
+  	현재 3.5에서는 parametType을 사용하지 않아도
+  	데이터를 잘 가져온다
+  	하지만 호환성을 위해서 사용을 해주자. 
+   -->
+  <insert id="insert" parameterType="productDTO">
+  		INSERT INTO tbl_product(
+				P_CODE,
+				P_NAME,
+				P_IPRICE,
+				P_OPRICE,
+				P_VAT,
+				P_FILE
+		) VALUES (		
+				#{p_code,jdbcType=VARCHAR},
+				#{p_name,jdbcType=VARCHAR},
+				#{p_iprice,jdbcType=VARCHAR},
+				#{p_oprice,jdbcType=VARCHAR},
+				#{p_vat,jdbcType=VARCHAR},
+				#{p_file,jdbcType=VARCHAR}
+		)
+  </insert>
+  
+  <update id="update" parameterType="productDTO">
+		UPDATE tbl_product SET
+				P_NAME = #{p_name,jdbcType=VARCHAR},
+				P_IPRICE = #{p_iprice,jdbcType=VARCHAR},
+				P_OPRICE = #{p_oprice,jdbcType=VARCHAR},
+				P_VAT = #{p_vat,jdbcType=VARCHAR},
+				P_FILE = #{p_file,jdbcType=VARCHAR}
+		WHERE P_CODE = #{p_code,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="create_product_table">
+		  CREATE TABLE tbl_product(
+			P_CODE VARCHAR(13) PRIMARY KEY,
+			P_NAME VARCHAR(50) NOT NULL,
+			P_IPRICE INT DEFAULT 0,
+			P_OPRICE INT DEFAULT 0,
+			P_VAT boolean DEFAULT TRUE,
+			P_FILE VARCHAR(255)
+		);
+  </select>
+  
+  
+</mapper>

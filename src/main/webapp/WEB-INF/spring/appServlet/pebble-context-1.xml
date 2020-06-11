@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="basenames">
+			<list>
+				<value>classpath:/egovframework/message/message</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="ko">
+		</property>
+	</bean>
+
+	<bean id="springExtension"
+		class="com.mitchellbosecke.pebble.spring.extension.SpringExtension">
+		<constructor-arg ref="messageSource" />
+	</bean>
+
+	<bean id="classLoader" class="java.lang.ClassLoader">
+	</bean>
+
+	<bean id="pabbleEngine" class="com.mitchellbosecke.pebble.PebbleEngine">
+		<property name="extension" ref="springExtension"/>
+		<property name="loader" ref="classLoader"/>
+	</bean>
+
+	<bean id="viewResolver"
+		class="com.mitchellbosecke.pebble.spring.servlet.PebbleViewResolver">
+		<property name="prefix" value="/WEB-INF/templates/"/>
+		<property name="suffix" value=".html"/>
+		<property name="pebbleEngine" ref="pebbleEngine" />
+	</bean>
+</beans>

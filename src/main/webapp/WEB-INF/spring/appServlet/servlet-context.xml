@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	
+	
+	<!-- 
+	<beans:bean 
+	class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	</beans:bean>
+	 -->
+
+	<!-- 
+	Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory 
+	-->
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/html/**" location="/html/" />
+
+	<!-- 
+	tomcat이 직접관리하지 않는 폴더를
+	외부에서 가상폴더로 접근할수 있도록 만들어주는 클래스
+	/context/files 라는 폴더에 접근을 하면
+	로컬의 c:/bizwork/files 폴더를 열어주어라
+	-->
+	
+	<beans:bean id = "macFilePath" class="java.lang.String">
+		<beans:constructor-arg value="/Users/callor/Documents/workspace/spring_2020/files/">
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id = "winFilePath" class="java.lang.String">
+		<beans:constructor-arg value="/callor/upload/">
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<resources mapping="/files/**" 
+		location="/files/, file:///Users/callor/Documents/workspace/spring_2020/files/,file:///c:/callor/upload/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- 
+	commons-io, commons-fileupload를 사용하여
+	파일을 업로드를 수행할때
+	업로드에 대한 설정을 수행하는 클래스
+	maxUploadSize : 한번에 upload 할수 있는 파일(들)의 최대 크기
+	maxUploadSizePerFile : upload 할수 있는 파일 1개의 최대 크기
+	 -->
+
+	
+	<context:component-scan base-package="com.callor.product.controller" />
+	<context:component-scan base-package="com.callor.product.service" />
+	
+	
+	
+</beans:beans>

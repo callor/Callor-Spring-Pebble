@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.callor.product.persistence.FileDao">
+
+	<!-- 동적쿼리를 사용해서 다수의 레코드를 한번에 insert 수행 -->
+	<insert id="filesInsert" parameterType="proFileDTO">
+		INSERT INTO tbl_files (
+				FILE_SEQ,
+				FILE_P_CODE,
+				FILE_ORIGIN_NAME,
+				FILE_UPLOAD_NAME
+		) VALUES(
+				#{p_code},
+				#{file_origin_name},
+				#{file_upload_name}
+		)
+	</insert>
+
+
+
+
+	<!-- 1개의 레코드를 추가 -->
+	<insert id="fileInsert" parameterType="proFileDTO">
+		INSERT INTO tbl_files (	
+			FILE_SEQ,
+			FILE_P_CODE,
+			FILE_ORIGIN_NAME,
+			FILE_UPLOAD_NAME
+		) VALUES(	
+			SEQ_FILES.NEXTVAL,
+			#{file_p_code,jdbcType=VARCHAR},
+			#{file_origin_name,jdbcType=VARCHAR},
+			#{file_upload_name,jdbcType=VARCHAR}
+		)
+	</insert>
+
+
+
+
+	<select id="fileList" parameterType="proFileDTO" resultType="proFileDTO">
+		
+		SELECT SEQ_FILES.NEXTVAL, SUB.*  FROM (
+		<foreach collection="list" item="file" separator="UNION ALL">
+			SELECT 
+					#{file.file_p_code},
+					#{file.file_origin_name},
+					#{file.file_upload_name}
+			FROM DUAL
+		</foreach>
+		) SUB
+	</select>
+
+
+  
+</mapper>
