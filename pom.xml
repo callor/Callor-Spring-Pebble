@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.19</version>
+			<version>8.0.28</version>
 		</dependency>
 
 		<!-- form에서 서버로 파일을 업로드할때 도와줄 클래스 -->
