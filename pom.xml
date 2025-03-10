@@ -12,7 +12,7 @@
 
 	<properties>
 		<java-version>1.8</java-version>
-		<org.springframework-version>5.3.18</org.springframework-version>
+		<org.springframework-version>6.1.14</org.springframework-version>
 
 		<org.spring-security-version>5.2.3.RELEASE</org.spring-security-version>
 		<io.pebble.version>3.1.4</io.pebble.version>
